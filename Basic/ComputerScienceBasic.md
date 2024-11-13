@@ -4,8 +4,8 @@
 
 ## **Byte Ordering**
 - 2byte이상의 데이터는 메모리에 연속적으로 저장된다. 이때, 각 바이트가 메모리에 정렬되는 방식을 Byte ordering이라고 한다.
-- Byte ordering에는 두 가지 방식이 있다. **0x01234567(4byte)**를 이용하여 설명하겠다.
-  1. **Big Endian**
+- Byte ordering에는 두 가지 방식이 있다. **0x01234567(4byte)**를 이용하여 설명하겠다.  
+  I. **Big Endian**
   - Big endian 은 큰 **byte** 부터 낮은 주소에 저장한다.
 
     | 메모리 주소 | 0x100 | 0x101 | 0x102 | 0x103 |
@@ -15,5 +15,5 @@
 
   
 
-  2. **Little Endian**
+  II. **Little Endian**
   - 
