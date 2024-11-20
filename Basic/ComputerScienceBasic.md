@@ -16,4 +16,4 @@
   
 
   II. **Little Endian**
-  - a
+  - aㅇ
