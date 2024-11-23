@@ -8,7 +8,7 @@
 ### **nc 사용법**
 - nc의 가장 간단한 사용 방식은 **nc hostname(ip) port** 이다.
 
-''' bash
+```bash
 $ nc google.com 80
 GET / HTTP/1.1
 
@@ -18,4 +18,4 @@ Expires: -1
 Cache-Control: private, max-age=0
 Content-Type: text/html; charset=ISO-8859-1
 ...
-'''
+```
