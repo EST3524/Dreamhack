@@ -124,14 +124,14 @@ ssh user@HOST -p PORT -i [개인 키 파일 경로]
   \- **docker pull [옵션] <이미지명>**  
   -> **docker pull ubuntu:18.04** : Docker hub에서 ubuntu:18.04 이미지를 다운받는다.
 
-- **docker rm** : 도커 컨테이너를 삭제한다.
-  \- **docker rm [옵션] <컨테이너명|ID>
+- **docker rm** : 도커 컨테이너를 삭제한다.  
+  \- **docker rm [옵션] <컨테이너명|ID>**
 
-- **docker rmi** : 도커 이미지를 삭제한다.
-  \- **docker rmi [옵션] <이미지명|ID>
+- **docker rmi** : 도커 이미지를 삭제한다.  
+  \- **docker rmi [옵션] <이미지명|ID>**
 
-- **docker inspect** : 도커 이미지 혹은 컨테이너의 자세한 정보를 출력한다.
-  \- **docker inspect [옵션] <이미지 혹은 컨테이너명|ID>
+- **docker inspect** : 도커 이미지 혹은 컨테이너의 자세한 정보를 출력한다.  
+  \- **docker inspect [옵션] <이미지 혹은 컨테이너명|ID>**
 
 
 
