@@ -69,6 +69,7 @@ ssh user@HOST -p PORT -i [개인 키 파일 경로]
   - 도커 이미지를 생성하려면 **Dockerfile**을 작성하고 이미지를 빌드해야 한다. 여기서 도커 파일은
   이미지를 빌드하는데 단계적으로 필요한 명령어가 있는 파일이다.
   - 도커 이미지에는 Tag를 붙일 수 있는데, 이는 주로 이미지의 버전을 지정하기 위해 사용한다.
+  - **Dockerfile -> Docker Image -> Docker Container**
 
   II. **Docker Container**
   - 도커 컨테이너는 도커 이미지로부터 만들어진 실행 가능한 인스턴스이며, 실행 중인 이미지를 말한다.
@@ -80,4 +81,6 @@ ssh user@HOST -p PORT -i [개인 키 파일 경로]
   - 도커의 공식 레지스트리로 [Docker Hub](https://hub.docker.com/) 가 있으며, 누구나 레지스트리에
   도커 이미지를 올리고 존재하는 도커 이미지를 가져올 수 있다.
 
-### **Docker 
+### **Docker Command**
+- 
+
