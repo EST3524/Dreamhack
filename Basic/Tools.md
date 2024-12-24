@@ -62,7 +62,7 @@ ssh user@HOST -p PORT -i [개인 키 파일 경로]
 컴퓨터의 환경 문제에서 벗어나 출제 의도를 정확하게 파악하고 정교한 공격을 수행하는 것이 가능하다.  
 
 ### **Docker Overview**
-- 도커는 Docker Image, Docker Container, Docker Registry 라는 용어를 사용한다.  
+- Docker Image, Docker Container, Docker Registry에 대해서 간단하게 설명한다.   
   I. **Docker Image**
   - 도커 이미지는 도커 컨테이너의 전 단계로, 컨테이너 생성에 필요한 파일, 환경 변수, 명령어 등과 파일 시스템 등
   컨테이너를 생성하고 실행하기 위한 모든 것을 포함한다.
@@ -80,4 +80,4 @@ ssh user@HOST -p PORT -i [개인 키 파일 경로]
   - 도커의 공식 레지스트리로 [Docker Hub](https://hub.docker.com/) 가 있으며, 누구나 레지스트리에
   도커 이미지를 올리고 존재하는 도커 이미지를 가져올 수 있다.
 
-
+### **Docker 
