@@ -82,5 +82,9 @@ ssh user@HOST -p PORT -i [개인 키 파일 경로]
   도커 이미지를 올리고 존재하는 도커 이미지를 가져올 수 있다.
 
 ### **Docker Command**
-- 
+- docker build : Dockerfile을 이용하여 이미지를 생성한다.   
+\- **docker build [옵션] <경로>**  
+\- **docker build -t <이미지명:태그> <경로>**  
+- \-t 옵션으로 이미지의 이름과 태그를 지정할 수 있으며, 태그를 작성하지 않을경우 "latest"로 지정된다. 
 
+- **docker build .** : 
