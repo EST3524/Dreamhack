@@ -92,10 +92,9 @@ ssh user@HOST -p PORT -i [개인 키 파일 경로]
 - **docker images** : 도커 이미지 목록을 출력한다.
 
 - **docker run** : 도커 이미지로 컨테이너를 생성하고 실행한다.  
-  \- docker run 대신, 컨테이너 생성과 실행을 따로 할 수도 있다.
-
-  -**docker run [옵션] <이미지명|ID> [명령어]**  
-  -**docker run -p <호스트 PORT>:<컨테이너 PORT> <이미지명|ID>**  
+  \- docker run 대신, 컨테이너 생성과 실행을 따로 할 수도 있다.  
+  \- **docker run [옵션] <이미지명|ID> [명령어]**  
+  \- **docker run -p <호스트 PORT>:<컨테이너 PORT> <이미지명|ID>**  
   \-p 옵션은 도커 컨테이너의 포트와 호스트의 포트를 매핑하여 컨테이너에서 리슨하고 있는 포트를  
   호스트의 특정 포트로 접속할 수 있도록 한다.
 
@@ -118,3 +117,18 @@ ssh user@HOST -p PORT -i [개인 키 파일 경로]
   \- **docker exec [옵션] <컨테이너명|ID> [명령어]**   
   -> **docker exec -it <컨테이너명|ID> /bin/bash** : 실행 중인 컨테이너에서 bash 셸 열기  
   \- docker run과 마찬가지로 -it 옵션으로 bash 셸을 실행할 수 있다. 
+
+- **docker stop** : 실행 중인 컨테이너를 중단한다.
+
+- **docker pull** : 레지스트리(Docker Hub)에 존재하는 도커 이미지를 다운받는다.  
+  \- **docker pull [옵션] <이미지명>**  
+  -> **docker pull ubuntu:18.04** : Docker hub에서 ubuntu:18.04 이미지를 다운받는다.
+
+- **docker rm** : 도커 컨테이너를 삭제한다.
+  \- **docker rm [옵션] <컨테이너명|ID>
+
+- **docker rmi** : 도커 이미지를 삭제한다.
+  \- **docker rmi [옵션] <이미지명|ID>
+
+- **docker inspect** : 도커 이미지 혹은 컨테이너의 자세한 정보를 출력한다.
+  \- **docker inspect [옵션] <이미지 혹은 컨테이너명|ID>
