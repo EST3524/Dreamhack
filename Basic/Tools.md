@@ -1,5 +1,5 @@
 # **Tools**
-- 이 파일에는 nc, SSH, Docker, 정규 표현식에 대해서 정리한다.
+- 이 파일에는 nc, SSH, Docker, Regular Expression에 대해서 정리한다.
 
 ## **I. nc**
 - nc(netcat)은 클라이언트가 서버에서 특정 포트를 통해 서비스하고 있는 프로그램과
@@ -133,5 +133,7 @@ ssh user@HOST -p PORT -i [개인 키 파일 경로]
 - **docker inspect** : 도커 이미지 혹은 컨테이너의 자세한 정보를 출력한다.  
   \- **docker inspect [옵션] <이미지 혹은 컨테이너명|ID>**
 
+## **IV. Regular Expression**
+- 정규 표현식은 특정한 패턴으로 문자열을 표현하는 식이다.
 
 
