@@ -82,10 +82,39 @@ ssh user@HOST -p PORT -i [개인 키 파일 경로]
   도커 이미지를 올리고 존재하는 도커 이미지를 가져올 수 있다.
 
 ### **Docker Command**
-- **docker build** : Dockerfile을 이용하여 이미지를 생성한다.
-- \-t 옵션으로 이미지의 이름과 태그를 지정할 수 있으며, 태그를 작성하지 않을경우 "latest"로 지정된다.    
+- **docker build** : Dockerfile을 이용하여 이미지를 생성한다.  
   \- **docker build [옵션] <경로>**  
   \- **docker build -t <이미지명:태그> <경로>**  
-    - **docker build .** : 현재 디렉토리에 있는 Dockerfile로 이미지를 생성한다.
-    - **docker build -t my-image .** : 현재 디렉토리에 있는 Dockerfile로 "my-image:latest" 이미지 생성한다.
+  -> **docker build .** : 현재 디렉토리에 있는 Dockerfile로 이미지를 생성한다.  
+  -> **docker build -t my-image .** : 현재 디렉토리에 있는 Dockerfile로 "my-image:latest" 이미지 생성한다.   
+  \-t 옵션으로 이미지의 이름과 태그를 지정할 수 있으며, 태그를 작성하지 않을경우 "latest"로 지정된다.
+ 
 - **docker images** : 도커 이미지 목록을 출력한다.
+
+- **docker run** : 도커 이미지로 컨테이너를 생성하고 실행한다.  
+  \- docker run 대신, 컨테이너 생성과 실행을 따로 할 수도 있다.
+
+  -**docker run [옵션] <이미지명|ID> [명령어]**  
+  -**docker run -p <호스트 PORT>:<컨테이너 PORT> <이미지명|ID>**  
+  \-p 옵션은 도커 컨테이너의 포트와 호스트의 포트를 매핑하여 컨테이너에서 리슨하고 있는 포트를  
+  호스트의 특정 포트로 접속할 수 있도록 한다.
+
+  **docker run -it <이미지명|ID> <명령어>**  
+  \-it 옵션으로 컨테이너에서 bash 셸을 사용할 수 있다.  
+  \-i (--interactive)는 표준 입력을 활성화하여 사용자가 명령어를 입력할 수 있도록 하고,  
+  \-t (--tty)는 가상 터미널(tty)을 사용할 수 있도록 한다.  
+  -> **docker run -it my-image:1 /bin/bash** : my-image:1 이미지로 컨테이너를 생성하고 실행하여 bash 셸 열기  
+
+- **docker ps** : 실행 중인 컨테이너 목록을 출력한다.  
+  \-a 옵션을 사용하면 종료된 컨테이너까지 모두 출력한다.
+
+- **docker create** : 도커 이미지로 컨테이너를 생성한다.  
+  \- **docker create [옵션] <이미지명|ID> [명령어]**
+
+- **docker start** : 중단된 컨테이너를 시작한다.  
+  \- **docker start [옵션] <컨테이너명|ID>**
+
+- **docker exec** : 실행 중인 컨테이너에 접속하여 명령을 수행한다.  
+  \- **docker exec [옵션] <컨테이너명|ID> [명령어]**   
+  -> **docker exec -it <컨테이너명|ID> /bin/bash** : 실행 중인 컨테이너에서 bash 셸 열기  
+  \- docker run과 마찬가지로 -it 옵션으로 bash 셸을 실행할 수 있다. 
