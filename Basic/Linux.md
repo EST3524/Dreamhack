@@ -73,7 +73,7 @@
 - /usr : 사용자 바이너리, 문서, 라이브러리, 헤더 파일 등을 담고 있는 디렉토리.  
 - /var : 프로그램이나 시스템이 실시간으로 가변적인 파일을 사용하고 저장해야 할 때 활용하는 디렉토리.  
 
-출처 : [리눅스 사용법](https://dreamhack.io/lecture/courses/441)
+참고 : [리눅스 사용법](https://dreamhack.io/lecture/courses/441)
 
 
 
