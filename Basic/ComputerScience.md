@@ -114,7 +114,7 @@ IV. **Base64 Encoding**
 
 - UNIX 기반의 또 다른 운영체제로는 macOS(GUI), Android, iOS 등이 있다.
 
-출처 : [컴퓨터 과학 기초](https://dreamhack.io/lecture/courses/440)
+참고 : [컴퓨터 과학 기초](https://dreamhack.io/lecture/courses/440)
 
 
 
