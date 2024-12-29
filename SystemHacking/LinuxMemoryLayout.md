@@ -49,5 +49,4 @@ char *str_ptr = "readonly";  // str_ptr은 data, 문자열은 rodata
 int main() { ... }
 ```
 
-위의 예시에서, 전역 변수 **data_num, data_rwstr**은 각각 정수 31337, 문자형 배열 "writable_data"의 첫 번째 문자 'w'의 주소를 값으로 갖는다. 이는 프로그램 실행 중 값이 변할 수 있으므로, data 세그먼트에 위치한다. 그러나, 
-
+위의 예시에서, 전역 변수 **data_num, data_rwstr**은 각각 정수 값 31337, 문자형 배열 "writable_data"의 첫 번째 문자 'w'의 주소를 값으로 갖는다. 이는 프로그램 실행 중 값이 변할 수 있으므로, data 세그먼트에 위치한다. 그러나, 전역 변수 **data_rostr**은 키워드 const를 사용하여 data_rostr 과 "readonly_data" 모두 값이 변할 수 없도록 하였다. 따라서 rodata 세그먼트에 위치한다. 또, 전역 변수 **str_ptr**은 문자열 "readonly"의 첫 번째 문자 'r'의 주소를 값으로 갖는다. 문자 배열과는 다르게 문자열은 프로그램이 실행되면서 값을 변경할 수 없다. 따라서, 주소를 저장하는 str_ptr은 data 세그먼트에, 변하지 않는 값인 "readonly" 문자열은 rodata 세그먼트에 위치하게 된다.
