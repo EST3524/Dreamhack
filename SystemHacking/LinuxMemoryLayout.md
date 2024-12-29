@@ -49,5 +49,5 @@ char *str_ptr = "readonly";  // str_ptr은 data, 문자열은 rodata
 int main() { ... }
 ```
 
-위의 예시에서, 전역 변수 **data_num, data_rwstr**은 
+위의 예시에서, 전역 변수 **data_num, data_rwstr**은 각각 정수 31337, 문자형 배열 "writable_data"의 첫 번째 문자 'w'의 주소를 값으로 갖는다. 이는 프로그램 실행 중 값이 변할 수 있으므로, data 세그먼트에 위치한다. 그러나, 
 
