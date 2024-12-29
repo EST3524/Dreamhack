@@ -3,12 +3,13 @@
   강의를 이해하고 문제를 푸는데에 꼭 필요한 가장 기초적인 내용만을 정리한다.
 
 # Overview
-- Computer Architecture
-  - Instruction Set Architecture
-    - General Register
-    - Segment Register
-    - Flag Register
-    - Instruction Pointer Register
+- Computer Architecture - Von Neumann Architecture
+- Instruction Set Architecture - x86-64 Architecture
+- x86-64 Register
+- General Register
+- Segment Register
+- Instruction Pointer Register
+- Flag Register
 
 ## Computer Architecture
 - 컴퓨터 구조는 컴퓨터가 효율적으로 작동할 수 있도록 하드웨어 및 소프트웨어의 기능을 고안하고, 이들을 구성하는 방법이다.
@@ -47,7 +48,7 @@
   - 하드웨어 및 컴퓨팅 방법론
     - 직접 메모리 접근
 
-### 폰 노이만 구조
+### Von Neumann Architecture
 - 초기 컴퓨터 과학자 중 한명인 폰 노이만은 컴퓨터에 연산, 제어, 저장의 세 가지 핵심 기능이 필요하다고 생각했다.  
   근대의 컴퓨터는 연산과 제어를 위해 CPU(중앙처리장치)를, 저장을 위해 memory(기억장치)를 사용하며,  
   장치간에 데이터나 제어 신호를 교환할 수 있도록 bus(버스)라는 전자 통로를 사용한다.
@@ -71,14 +72,37 @@
     Data Bus(데이터 버스), 주소를 지정하는 Address Bus(주소 버스), 읽기/쓰기를 제어하는 Control Bus(제어 버스)가 있다.  
     이 외에도 랜선이나 데이터 전송 소프트웨어, 프로토콜 등도 버스라고 한다.
 
-### 명령어 집합 구조
+## Instruction Set Architecture
 - ISA(명령어 집합 구조)는 CPU가 해석하는 명령어의 집합이다.
 - ISA는 IA-32, x86-64(x64), MIPS, AVR 등 컴퓨터의 용도에 따라 다양하게 존재한다.
 - x86-64는 고성능 프로세서를 설계하기 위해 사용되며, 데스크톱 또는 랩톱에 적합하다.
 - x86 기반 CPU의 점유율이 압도적으로 많고 가장 범용적이다.  
 
 ### x86-64 Architecture
-- x
+- 1999년, AMD는 인텔의 32비트 CPU 아키텍처인 IA-32를 64비트로 확장한 AMD64 아키텍처를 발표하였다.  
+  AMD64가 시장에서 널리 인정받자, 인텔을 비롯한 다양한 회사에서 이를 기반으로 다양한 이름의  
+  아키텍처를 발표하기 시작했다. 이 과정에서 범용적이고 중립적으로 지칭되는 x86-64라는 명칭이  
+  만들어졌고, 현재 대다수 개인용 컴퓨터는 이 x86-64 아키텍처 기반의 CPU를 탑재하고 있다.
+- **(Intel64, IA-32e, EM64T, amd64) ∈ x86-64 (x64)**  
+- n 비트 아키텍처에서 n은 CPU가 한번에 처리할 수 있는 최대 데이터의 크기이다. 컴퓨터 과학에서는  
+  이를 CPU가 이해할 수 있는 데이터의 단위라는 의미에서 **WORD**라고 부른다. **WORD**의 크기는  
+  CPU가 어떻게 설계됐느냐에 따라 달라진다.
+
+## x86-64 Register
+- 레지스터는 CPU가 데이터를 빠르게 저장하고 사용할 때 이용하는 장소로, 산술 연산에 필요한 데이터를
+  저장하거나 주소를 저장하고 참조하는 등 다양한 용도로 사용된다. x86-64 아키텍처에는
+  **General Register(범용 레지스터)**, **Segment Register(세그먼트 레지스터)**,
+  **Instruction Pointer Register-IP(명령어 포인터 레지스터)**, **Flag Register(플래그 레지스터)** 가 존재한다.
+
+### General Register
+- 범용 레지스터는 주용도는 있으나, 그 외의 다양한 용도로 사용될 수 있는 레지스터이다. x86-64에서 각각의 범용 레지스터는
+  8바이트를 저장할 수 있고, 부호 없는 정수를 기준으로 $2^{64} - 1$ 까지의 수를 나타낼 수 있다.
+
+  
+
+
+
+  
 			
 
 
