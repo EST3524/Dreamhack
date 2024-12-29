@@ -145,6 +145,7 @@
 
   ![x86-64_register](Img/x86-64_register.png)
 
+참고 : [Computer Architecture](https://dreamhack.io/lecture/courses/43)
 
 
   
