@@ -4,13 +4,14 @@
 #Overview
 - Assembly
 - x86-64 Assembly
-- Data Transfer : mov, lea
-- Arithmetic : inc, dec, add, sub
-- Logical : and, or, xor, not
-- Comparison : cmp, test
-- Branch : jmp, je, jg
-- Stack : push, pop
-- Procedure : call, ret, leave
-- System call : syscall
+- Data Transfer
+- Arithmetic
+- Logical
+- Comparison
+- Branch
+- Stack
+- Procedure
+- System call
 
 ## Assembly
+컴퓨터는 모든 것을 기계어로 처리한다. 기계어는 0과 1로만 구성되어 있기 때문에,  
