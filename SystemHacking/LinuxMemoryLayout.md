@@ -92,3 +92,5 @@ int main() {
 ```
 
 위의 코드는 heap_data_ptr에 malloc()으로 동적 할당한 영역의 주소를 저장하고, 이 영역에 값을 쓴다. 여기서 heap_data_ptr은 지역변수이므로 스택에 위치하며, malloc()으로 할당받은 힙 세그먼트의 주소를 가리킨다.
+
+참고 : [Linux Memory Layout](https://dreamhack.io/lecture/courses/52)
