@@ -141,8 +141,9 @@
 - IA-32에서 CPU의 레지스터들은 32비트 크기를 가지며, 이들의 명칭은 각각 eax, ebx, ecx, edx, esi, edi, esp, ebp 이다.
 - rax, rbx, rcx, rdx, rsi, rdi, rsp, rbp 가 이들의 확장된 형태이며, eax, ebx 등은 확장된 레지스터의 하위 32비트를 가리킨다.
 - 마찬가지로, 과거 IA-16과의 호환을 위해 ax, bx, cx, dx, si, di, sp, bp는 eax, ebx, ecx, edx, esi, edi, esp, ebp의 하위 16비트를 가리킨다.
-- 이들 중 몇몇은 다시 상위 8비트, 하위 8비트로 나뉜다.
-  
+- 이들 중 몇몇은 다시 상위 8비트, 하위 8비트로 나뉜다.  
+
+  ![x86-64_register](Img/x86-64_register.png)
 
 
 
