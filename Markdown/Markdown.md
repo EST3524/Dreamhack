@@ -1,4 +1,4 @@
-# Markdown 문법
+# Markdown Syntax
 
 ## **Headings** 
 - '\#' 을 사용하여 제목을 추가할 수 있다.
