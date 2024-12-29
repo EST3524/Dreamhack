@@ -10,6 +10,7 @@
 - Segment Register
 - Instruction Pointer Register
 - Flag Register
+- Register Compatibility
 
 ## Computer Architecture
 - 컴퓨터 구조는 컴퓨터가 효율적으로 작동할 수 있도록 하드웨어 및 소프트웨어의 기능을 고안하고, 이들을 구성하는 방법이다.
@@ -110,12 +111,40 @@
   | rsp (stack pointer) | 사용중인 스택의 위치를 가리키는 포인터 |
   | rbp (stack base pointer) | 스택의 바닥을 가리키는 포인터 |  
 
-## Segment Register
+### Segment Register
 - x64 아키텍처에는 **cs, ss, ds, es, fs, gs** 총 6가지 세그먼트 레지스터가 존재하며, 각 레지스터의 크기는 16비트이다.  
 - 세그먼트 레지스터는 x64로 아키텍처가 확장되면서 용도에 큰 변화가 생겼는데, 현대의 x64에서  
   cs, ds, ss 레지스터는 코드 영역과 데이터, 스택 메모리 영역을 가리킬 떄 사용되고,  
-  나머지 레지스터는 운영체제 별로 용도를 결정할 수 있도록 범용적인 용도로 사용된다.
-  
+  나머지 레지스터는 운영체제 별로 용도를 결정할 수 있도록 범용적으로 사용된다.
+
+### Instruction Pointer Register
+- 프로그램은 일련의 기계어 코드들로 이루어져 있다. 이 중에서 CPU가 어느 부분의 코드를 실행할지  
+  가리키는 것이 명령어 포인터 레지스터의 역할이다. x64 아키텍처의 명령어 레지스터는 **rip**이며,  
+  크기는 8바이트이다.
+
+### Flag Register
+- 플래그 레지스터는 프로세서의 현재 상태를 저장하고 있는 레지스터이다.
+- x64 아키텍처에서는 **RFLAGS**라고 불리는 64비트 크기의 플래그 레지스터가 존재하는데,  
+  플래그 레지스터는 자신을 구성하는 여러 비트들로 CPU의 현재 상태를 표현한다.
+- RFLAGS는 64비트이므로 최대 64개의 플래그를 사용할 수 있지만, 실제로는 20여개의 비트만 사용한다.  
+  그 중, 주로 접하게 될 것은 다음과 같다.
+
+  | 플래그 | 의미 |
+  | :---: | :---: |
+  | CF (Carry Flag) | 부호 없는 수의 연산 결과가 비트의 범위를 넘을 경우 설정한다. |
+  | ZF (Zero Flag) | 연산의 결과가 0일 경우 설정한다. |
+  | SF (Sign Flag) | 연산의 결과가 음수일 경우 설정한다. |
+  | OF (Overflow Flag)) | 부호 있는 수의 연산 결과가 비트 범위를 넘을 경우 설정한다. |
+
+### Register Compatibility
+- x86-64 아키텍처는 IA-32의 64비트 확장 아키텍처이며, 호환이 가능하다.
+- IA-32에서 CPU의 레지스터들은 32비트 크기를 가지며, 이들의 명칭은 각각
+  eax, ebx, ecx, edx, esi, edi, esp, ebp 이다.
+- rax, rbx, rcx, rdx, rsi, rdi, rsp, rbp 가 이들의 확장된 형태이며,
+  eax, ebx 등은 확장된 레지스터의 하위 32비트를 가리킨다.
+- 마찬가지로, 과거 IA-16과의 호환을 위해 ax, bx, cx, dx, si, di, sp, bp는
+  eax, ebx, ecx, edx, esi, edi, esp, ebp의 하위 16비트를 가리킨다.
+- 이들 중 몇몇은 다시 상위 8비트, 하위 8비트로 나뉜다.
   
 
 
