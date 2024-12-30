@@ -481,7 +481,7 @@ int main(int argc, char *argv[])
 }
 ```
 
-memset() 함수는 메모리 블록을 원하는 값으로 덮어 씌운다.
+int main(int argc, char *argv[])에서 argv는 문자열을 여러개 입력받을 수 있고, 입력 받은 문자열 포인터를 저장하는 배열이다. argv[0]은 프로그램의 실행 파일 이름 또는 경로로 자동 설정되며, 입력한 main()의 인자는 argv[1]부터 전달된다. argc는 전달된 인자의 개수인데, argv[0]을 포함하여 자동으로 계산하고 저장된다. memset()함수는 메모리 블록을 원하는 값으로 덮어 씌운다.
 
 ## gdb / python argv
 run 명령어의 인자로 **$()** 와 함께 파이썬 코드를 입력하면 값을 전달할 수 있다. 다음은 파이썬에서 print 함수를 통해 출력한 값을 run 명령어의 인자로 전달하는 명령이다.
@@ -509,7 +509,5 @@ Name: dreamhack
 
 [Inferior 1 (process 4830) exited normally]
 ```
-
-
 
 
