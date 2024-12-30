@@ -353,4 +353,21 @@ Run till exit from #0  0x0000000000401040 in printf@plt ()
 ## examine
 프로그램을 분석하다 보면 가상 메모리에 존재하는 임의 주소의 값을 관찰해야할 때가 있다. 이를 위해 gdb에서는 기본적으로 **x**라는 명령어를 제공한다. x를 이용하면 **특정 주소**에서 **원하는 길이 만큼**의 데이터를 **원하는 형식으로 인코딩**하여 볼 수 있다.
 
-> Format letters are o(octal), x(hex), d(decimal), u(unsigned decimal), t(binary), f(float), a(address), i(instruction), c(char), s(string) and z(hex, zero padded on the left). Size letters are b(byte), h(halfword), w(word), g(giant, 8 bytes).
+- Format letters 
+  - o(octal)
+  - x(hex)
+  - d(decimal)
+  - u(unsigned decimal)
+  - t(binary)
+  - f(float)
+  - a(address)
+  - i(instruction)
+  - c(char)
+  - s(string)
+  - z(hex, zero padded on the left)
+  
+- Size letters 
+  - b(byte)
+  - h(halfword)
+  - w(word)
+  - g(giant, 8 bytes)
