@@ -407,5 +407,54 @@ rsp = 0x7fffffffc400
 
 **System Call**은 유저 모드에서 커널 모드의 시스템 소프트웨어에게 어떤 동작을 요청하기 위해 사용된다. 소프트웨어 대부분은 커널의 도움이 필요하다. 예를 들어, 사용자가 **cat flag**를 실행하면 cat은 flag라는 파일을 읽어서 사용자의 화면에 출력해 줘야 하는데, flag는 파일 시스템에 존재하므로 이를 읽으려면 파일 시스템에 접근할 수 있어야 한다. 유저 모드에서는 이를 직접 할 수 없으므로 커널이 도움을 줘야 한다. 여기서, 도움이 필요하다는 요청을 **시스템 콜**이라고 한다. 유저 모드의 소프트웨어가 필요한 도움을 요청하면, 커널이 요청한 동작을 수행하여 유저에게 결과를 반환한다.  
 
-x64 아키텍처에는 시스템 콜을 위해 **syscall** 명령어가 있다.
-  
+x64 아키텍처에는 시스템 콜을 위해 **syscall** 명령어가 있다.  
+
+**syscall**  
+
+**요청 : rax**  
+**인자 순서 : rdi -> rsi -> rdx -> rcx -> r8 -> r9 -> stack**  
+
+**예제**
+
+```asm
+[Register]
+rax = 0x1   
+rdi = 0x1   
+rsi = 0x401000  
+rdx = 0xb   
+
+[Memory]
+0x401000 | "Hello Wo"   
+0x401008 | "rld"    
+
+[Code]  
+syscall
+```
+
+**결과**
+
+```
+Hello World
+```
+
+**해석**  
+
+syscall table을 보면, rax가 0x1일 때, 커널에 write 시스템 콜을 요청한다. 이 때 **rdi = 0x1, rsi = 0x401000, rdx = 0xb** 이므로 커널은 **write(0x1, 0x401000, 0xb)** 를 수행하게 된다.  
+
+write함수의 각 인자는 출력 스트림, 출력 버퍼, 출력 길이를 나타낸다. 여기서 0x1은 stdout이며, 이는 일반적으로 화면을 의미한다. 0x401000에는 Hello World가 저장되어 있고, 길이는 0xb로 지정되어 있으므로 화면에 Hello World가 출력된다.  
+
+| syscall | rax | rdi | rsi | rdx |
+| :---: | :---: | :---: | :---: | :---: |
+| read | 0x00 | unsigned int fd | char *buf | size_t count |
+| write | 0x01 | unsigned int fd | const char *buf | size_t count |
+| open | 0x02 | const char *filename | int flags | umode_t mode |
+| close | 0x03 | unsigned int fd | | |
+| mprotect | 0x0a | unsigned long start | size_t len | unsigned long prot |
+| connect | 0x2a | int sockfd | struct sockaddr * addr | int addrlen |
+| execve | 0x3b | const char *filename | const char *const *argv | const char *const *envp |
+
+참고 : [x86 Assembly : Part 1](https://dreamhack.io/lecture/courses/37), [x86 Assembly : Part 2](https://dreamhack.io/lecture/courses/567)
+
+
+
+
