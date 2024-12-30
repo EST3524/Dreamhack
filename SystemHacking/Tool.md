@@ -266,4 +266,91 @@ ni와 si는 모두 어셈블리 명령어를 한 줄 실행하지만, call 등�
 ni를 입력하면 다음과 같이 printf함수 바로 다음으로 rip가 이동한 것을 확인할 수 있다.
 
 ```asm
+pwndbg> ni
+1 + 2 = 3
+0x000000000040117b in main ()
+[중략]
 
+─────────────────────────────────[ DISASM / x86-64 / set emulate on ]─────────────────────────────────
+   0x401176       <main+64>                       call   printf@plt                  <printf@plt>
+
+ ► 0x40117b       <main+69>                       mov    eax, 0     EAX => 0
+   0x401180       <main+74>                       leave
+   0x401181       <main+75>                       ret                                <__libc_start_call_main+128>
+    ↓
+   0x7ffff7db4d90 <__libc_start_call_main+128>    mov    edi, eax     EDI => 0
+   0x7ffff7db4d92 <__libc_start_call_main+130>    call   exit                        <exit>
+
+   0x7ffff7db4d97 <__libc_start_call_main+135>    call   __nptl_deallocate_tsd       <__nptl_deallocate_tsd>
+
+   0x7ffff7db4d9c <__libc_start_call_main+140>    lock dec dword ptr [rip + 0x1f0505]
+   0x7ffff7db4da3 <__libc_start_call_main+147>    sete   al
+   0x7ffff7db4da6 <__libc_start_call_main+150>    test   al, al
+   0x7ffff7db4da8 <__libc_start_call_main+152>    jne    __libc_start_call_main+168  <__libc_start_call_main+168>
+[생략]
+```
+
+printf가 출력하고자 하는 문자열은 stdout의 버퍼에서 잠시 대기한 뒤 출력된다. 여기서 버퍼는 데이터가 목적지로 이동하기 전에 잠시 저장되는 장소이다. stdout 버퍼는 특정 조건이 만족됐을 때만 데이터를 목적지로 이동시키는데, 조건은 다음과 같다.
+
+1. 프로그램이 종료될 때
+2. 버퍼가 가득 찼을 때
+3. fflush와 같은 함수로 버퍼를 비우도록 명시했을 때
+4. 개행문자가 버퍼에 들어왔을 때
+
+### step into
+printf 함수를 호출하는 지점까지 다시 프로그램을 실행시킨 뒤, **si**를 입력하면 다음과 같이 printf 함수 내부로 rip가 이동한 것을 확인할 수 있다. 프로그램을 분석하다가 어떤 함수의 내부까지 궁금할 때는 si를, 그렇지 않을 때는 ni를 사용한다.
+
+```asm
+pwndbg> si
+0x0000000000401040 in printf@plt ()
+[중략]
+──────────────────────────────────────────────────────────────────────────────────────[ DISASM / x86-64 / set emulate on ]───────────────────────────────────────────────────────────────────────────────────────
+ ► 0x401040       <printf@plt>                      endbr64
+   0x401044       <printf@plt+4>                    bnd jmp qword ptr [rip + 0x2fcd]   <0x401030>
+    ↓
+   0x401030                                         endbr64
+   0x401034                                         push   0
+   0x401039                                         bnd jmp 0x401020                   <0x401020>
+    ↓
+   0x401020                                         push   qword ptr [rip + 0x2fe2]
+   0x401026                                         bnd jmp qword ptr [rip + 0x2fe3]   <_dl_runtime_resolve_xsavec>
+    ↓
+   0x7ffff7fd8d30 <_dl_runtime_resolve_xsavec>      endbr64
+   0x7ffff7fd8d34 <_dl_runtime_resolve_xsavec+4>    push   rbx
+   0x7ffff7fd8d35 <_dl_runtime_resolve_xsavec+5>    mov    rbx, rsp                    RBX => 0x7fffffffe040 ◂— 0
+   0x7ffff7fd8d38 <_dl_runtime_resolve_xsavec+8>    and    rsp, 0xffffffffffffffc0     RSP => 0x7fffffffe040 (0x7fffffffe040 & -0x40)
+[생략]
+```
+
+### finish
+step into로 함수 내부에 들어가서 필요한 부분을 모두 분석했는데, 함수의 규모가 커서 ni로는 원래 실행 흐름으로 돌아가기 어려울 때 **finish**라는 명령어를 사용하여 함수의 끝까지 한 번에 실행할 수 있다.
+
+```asm
+pwndbg> finish
+Run till exit from #0  0x0000000000401040 in printf@plt ()
+1 + 2 = 3
+0x000000000040117b in main ()
+[중략]
+──────────────────────────────────────────────────────────────────────────────────────[ DISASM / x86-64 / set emulate on ]───────────────────────────────────────────────────────────────────────────────────────
+   0x401176       <main+64>                       call   printf@plt                  <printf@plt>
+
+ ► 0x40117b       <main+69>                       mov    eax, 0     EAX => 0
+   0x401180       <main+74>                       leave
+   0x401181       <main+75>                       ret                                <__libc_start_call_main+128>
+    ↓
+   0x7ffff7db4d90 <__libc_start_call_main+128>    mov    edi, eax     EDI => 0
+   0x7ffff7db4d92 <__libc_start_call_main+130>    call   exit                        <exit>
+
+   0x7ffff7db4d97 <__libc_start_call_main+135>    call   __nptl_deallocate_tsd       <__nptl_deallocate_tsd>
+
+   0x7ffff7db4d9c <__libc_start_call_main+140>    lock dec dword ptr [rip + 0x1f0505]
+   0x7ffff7db4da3 <__libc_start_call_main+147>    sete   al
+   0x7ffff7db4da6 <__libc_start_call_main+150>    test   al, al
+   0x7ffff7db4da8 <__libc_start_call_main+152>    jne    __libc_start_call_main+168  <__libc_start_call_main+168>
+[생략]
+```
+
+## examine
+프로그램을 분석하다 보면 가상 메모리에 존재하는 임의 주소의 값을 관찰해야할 때가 있다. 이를 위해 gdb에서는 기본적으로 **x**라는 명령어를 제공한다. x를 이용하면 **특정 주소**에서 **원하는 길이 만큼**의 데이터를 **원하는 형식으로 인코딩**하여 볼 수 있다.
+
+> Format letters are o(octal), x(hex), d(decimal), u(unsigned decimal), t(binary), f(float), a(address), i(instruction), c(char), s(string) and z(hex, zero padded on the left). Size letters are b(byte), h(halfword), w(word), g(giant, 8 bytes).
