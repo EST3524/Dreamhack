@@ -510,4 +510,5 @@ Name: dreamhack
 [Inferior 1 (process 4830) exited normally]
 ```
 
+참고 : [gdb](https://dreamhack.io/lecture/courses/55)
 
