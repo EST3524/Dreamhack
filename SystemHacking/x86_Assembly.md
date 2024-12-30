@@ -195,4 +195,35 @@ test는 두 피연산자에 AND 비트연산을 취한다. 연산의 결과는 o
 ### Stack
 x64 아키텍처에서 다음의 명령어로 스택을 조작할 수 있다.  
 
-**
+**push val : val을 스택 최상단에 쌓음**  
+
+**연산**  
+-> rsp -= 8  
+-> [rsp] = val  
+
+**예제**
+
+```asm
+[Register]
+rsp = 0x7fffffffc400
+
+[Stack]
+0x7fffffffc400 | 0x0  <- rsp
+0x7fffffffc408 | 0x0
+
+[Code]
+push 0x31337
+```
+
+**결과**
+
+```asm
+[Register]
+rsp = 0x7fffffffc3f8
+
+[Stack]
+0x7fffffffc3f8 | 0x31337 <- rsp 
+0x7fffffffc400 | 0x0
+0x7fffffffc408 | 0x0
+```
+
