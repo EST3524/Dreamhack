@@ -371,3 +371,133 @@ Run till exit from #0  0x0000000000401040 in printf@plt ()
   - h(halfword)
   - w(word)
   - g(giant, 8 bytes)
+
+**rsp부터 8바이트씩 hex형식으로 출력하는 것을 10번 반복**
+
+```asm
+pwndbg> x/10gx $rsp
+0x7fffffffe078: 0x00007ffff7db4d90      0x0000000000000000
+0x7fffffffe088: 0x0000000000401136      0x00000001ffffe170
+0x7fffffffe098: 0x00007fffffffe188      0x0000000000000000
+0x7fffffffe0a8: 0xb0117a1251dc0e82      0x00007fffffffe188
+0x7fffffffe0b8: 0x0000000000401136      0x0000000000403e18
+```
+
+**rip부터 어셈블리 명령어를 출력하는 것을 5번 반복**
+
+```asm
+pwndbg> x/5i $rip
+=> 0x401136 <main>:     endbr64
+   0x40113a <main+4>:   push   rbp
+   0x40113b <main+5>:   mov    rbp,rsp
+   0x40113e <main+8>:   sub    rsp,0x10
+   0x401142 <main+12>:  mov    DWORD PTR [rbp-0xc],0x0
+```
+
+**0x400000부터 문자열을 1번 출력**
+
+```asm
+pwndbg> x/s 0x400000
+0x400000:       "\177ELF\002\001\001"
+```
+
+## telescope
+**telescope**는 pwndbg가 제공하는 강력한 메모리 덤프 기능이다. 특정 주소의 메모리 값들을 보여주는 것에서 그치지 않고, 메모리가 참조하고 있는 주소를 재귀적으로 탐색하여 값을 보여준다.
+
+```asm
+pwndbg> tele
+00:0000│ rsp 0x7fffffffe078 —▸ 0x7ffff7db4d90 (__libc_start_call_main+128) ◂— mov edi, eax
+01:0008│     0x7fffffffe080 ◂— 0
+02:0010│     0x7fffffffe088 —▸ 0x401136 (main) ◂— endbr64
+03:0018│     0x7fffffffe090 ◂— 0x1ffffe170
+04:0020│     0x7fffffffe098 —▸ 0x7fffffffe188 —▸ 0x7fffffffe3f7 ◂— '/home/EST3524/debugee'
+05:0028│     0x7fffffffe0a0 ◂— 0
+06:0030│     0x7fffffffe0a8 ◂— 0xd2dca7b59173129a
+07:0038│     0x7fffffffe0b0 —▸ 0x7fffffffe188 —▸ 0x7fffffffe3f7 ◂— '/home/EST3524/debugee'
+```
+
+## vmmap
+**vmmap은 가상 메모리의 레이아웃을 보여준다. 어떤 파일이 매핑 된 영역일 경우, 해당 파일의 경로까지 보여준다.
+
+```asm
+pwndbg> vmmap
+LEGEND: STACK | HEAP | CODE | DATA | WX | RODATA
+             Start                End Perm     Size Offset File
+          0x400000           0x401000 r--p     1000      0 /home/EST3524/debugee
+          0x401000           0x402000 r-xp     1000   1000 /home/EST3524/debugee
+          0x402000           0x403000 r--p     1000   2000 /home/EST3524/debugee
+          0x403000           0x404000 r--p     1000   2000 /home/EST3524/debugee
+          0x404000           0x405000 rw-p     1000   3000 /home/EST3524/debugee
+    0x7ffff7d88000     0x7ffff7d8b000 rw-p     3000      0 [anon_7ffff7d88]
+    0x7ffff7d8b000     0x7ffff7db3000 r--p    28000      0 /usr/lib/x86_64-linux-gnu/libc.so.6
+    0x7ffff7db3000     0x7ffff7f48000 r-xp   195000  28000 /usr/lib/x86_64-linux-gnu/libc.so.6
+    0x7ffff7f48000     0x7ffff7fa0000 r--p    58000 1bd000 /usr/lib/x86_64-linux-gnu/libc.so.6
+    0x7ffff7fa0000     0x7ffff7fa1000 ---p     1000 215000 /usr/lib/x86_64-linux-gnu/libc.so.6
+    0x7ffff7fa1000     0x7ffff7fa5000 r--p     4000 215000 /usr/lib/x86_64-linux-gnu/libc.so.6
+    0x7ffff7fa5000     0x7ffff7fa7000 rw-p     2000 219000 /usr/lib/x86_64-linux-gnu/libc.so.6
+    0x7ffff7fa7000     0x7ffff7fb4000 rw-p     d000      0 [anon_7ffff7fa7]
+    0x7ffff7fbb000     0x7ffff7fbd000 rw-p     2000      0 [anon_7ffff7fbb]
+    0x7ffff7fbd000     0x7ffff7fc1000 r--p     4000      0 [vvar]
+    0x7ffff7fc1000     0x7ffff7fc3000 r-xp     2000      0 [vdso]
+    0x7ffff7fc3000     0x7ffff7fc5000 r--p     2000      0 /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+    0x7ffff7fc5000     0x7ffff7fef000 r-xp    2a000   2000 /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+    0x7ffff7fef000     0x7ffff7ffa000 r--p     b000  2c000 /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+    0x7ffff7ffb000     0x7ffff7ffd000 r--p     2000  37000 /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+    0x7ffff7ffd000     0x7ffff7fff000 rw-p     2000  39000 /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+    0x7ffffffde000     0x7ffffffff000 rw-p    21000      0 [stack]
+```
+
+어떤 파일을 메모리에 적재하는 것을 파일 매핑이라고 한다. 위 메모리 레이아웃에서 **/home/EST3524/debugee, /usr/lib/x86_64-linux-gnu/libc.so.6, /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2**가 매핑된 파일들이다.  
+
+리눅스에서는 ELF를 실행할 때, 먼저 ELF의 코드와 여러 데이터를 가상 메모리에 매핑하고, 해당 ELF에 링크된 **Shared Object, so(공유 오브젝트)** 를 추가로 메모리에 매핑한다. 공유 오브젝트는 자주 사용되는 함수들을 미리 컴파일해둔 것이다. C언어의 printf, scanf 등이 리눅스에서는 libc에 구현되어 있다. 공유 오브젝트에 이미 구현된 함수를 호출할 때는 매핑된 메모리에 존재하는 함수를 대신 호출한다.
+
+## gdb / python
+gdb를 사용하여 프로그램을 디버깅할 때, 키보드로 직접 타이핑하기 어렵거나 불가능한 값을 python을 사용하여 넘겨줄 수 있다. 
+
+## 실습 예제
+
+```c
+// Name: debugee2.c
+// Compile: gcc -o debugee2 debugee2.c -no-pie
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[])
+{
+	char name[20];
+	if( argc < 2 ) {
+		printf("Give me the argv[1]!\n");
+		exit(0);
+	}
+	memset(name, 0, sizeof(name));
+
+	printf("argv[1] %s\n", argv[1]);
+
+	read(0, name, sizeof(name)-1);
+	printf("Name: %s\n", name);
+	return 0;
+}
+```
+
+memset() 함수는 메모리 블록을 원하는 값으로 덮어 씌운다.
+
+## gdb / python argv
+run 명령어의 인자로 **$()** 와 함께 파이썬 코드를 입력하면 값을 전달할 수 있다. 다음은 파이썬에서 print 함수를 통해 출력한 값을 run 명령어의 인자로 전달하는 명령이다.
+
+```bash
+pwndbg> r $(python3 -c "print('\xff' * 100)")
+Starting program: /home/EST3524/debugee2 $(python3 -c "print('\xff' * 100)")
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+argv[1] ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ
+```
+
+-c 옵션을 사용하면 "print('\xff' * 100)"를 파일 명이 아닌 문자열로 작성한 명령어로 해석한다.
+
+## gdb / python input
+이전과 같이 $()와 함께 파이썬 코드를 입력하면 값을 입력하여 함수의 인자로 전달할 수는 있지만, 
+
+
+
