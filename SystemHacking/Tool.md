@@ -497,7 +497,19 @@ argv[1] ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ
 -c 옵션을 사용하면 "print('\xff' * 100)"를 파일 명이 아닌 문자열로 작성한 명령어로 해석한다.
 
 ## gdb / python input
-이전과 같이 $()와 함께 파이썬 코드를 입력하면 값을 입력하여 함수의 인자로 전달할 수는 있지만, 
+이전과 같이 $()와 함께 파이썬 코드를 입력하면 값을 입력하여 함수의 인자로 전달할 수는 있지만, scanf()처럼 표준 입력이 필요한 함수에 입력 값으로써 전달할 수는 없다. 이 때 **<<<**를 사용하면 표준 입력 값으로써 출력을 전달할 수 있다.
+
+```bash
+pwndbg> r $(python3 -c "print('\xff' * 100)") <<< $(python3 -c "print('dreamhack')")
+Starting program: /home/EST3524/debugee2 $(python3 -c "print('\xff' * 100)") <<< $(python3 -c "print('dreamhack')")
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+argv[1] ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ
+Name: dreamhack
+
+[Inferior 1 (process 4830) exited normally]
+```
+
 
 
 
