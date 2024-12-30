@@ -82,5 +82,117 @@ mov 명령문에서 dst에 주소를 사용하려면 크기 지정자가 붙어�
 | dec eax | eax -= 1 |
 
 ### Logical
-논리 연산 명령어는 **and, or, xor, neg 등의 비트 연산을 지시**한다. 연산은 비트 단위로 이루어진다.
+논리 연산 명령어는 **and, or, xor, neg 등의 비트 연산을 지시**한다. 연산은 비트 단위로 이루어진다.  
 
+**and dst, src : dst와 src의 비트가 모두 1이면 1, 아니면 0**
+
+```asm
+[Register]
+eax = 0xffff0000
+ebx = 0xcafebabe
+
+[Code]
+and eax, ebx
+
+[Result]
+eax = 0xcafe0000
+```
+
+**or dst, src : dst와 src의 비트 중 하나라도 1이면 1, 아니면 0**
+
+```asm
+[Register]
+eax = 0xffff0000
+ebx = 0xcafebabe
+
+[Code]
+or eax, ebx
+
+[Result]
+eax = 0xffffbabe
+```
+
+**xor dst, src : dst와 src의 비트가 서로 다르면 1, 같으면 0**
+
+```asm
+[Register]
+eax = 0xffffffff
+ebx = 0xcafebabe
+
+[Code]
+xor eax, ebx
+
+[Result]
+eax = 0x35014541
+```
+
+**not op : op의 비트 전부 반전**
+
+```asm
+[Register]
+eax = 0xffffffff
+
+[Code]
+not eax
+
+[Result]
+eax = 0x00000000
+```
+
+### Comparison
+비교 명령어는 **두 피연산자의 값을 비교하고 플래그를 설정**한다.  
+
+**cmp op1, op2 : op1과 op2를 비교**  
+cmp는 두 피연산자를 빼서 대소를 비교한다. 연산의 결과는 op1에 대입하지 않는다.
+
+```asm
+[Code]
+1: mov rax, 0xA
+2: mov rbx, 0xA
+3: cmp rax, rbx ; ZF=1
+```
+
+**test op1, op2 : op1과 op2를 비교**  
+test는 두 피연산자에 AND 비트연산을 취한다. 연산의 결과는 op1에 대입하지 않는다.
+
+```asm
+[Code]
+1: xor rax, rax
+2: test rax, rax ; ZF=1
+```
+
+### Branch
+분기 명령어는 **rip**를 이동시켜 **실행 흐름을 바꾼다.**  
+
+**jmp addr : addr로 rip를 이동시킨다.**
+
+```asm
+[Code]
+1: xor rax, rax
+2: jmp 1 ; jump to 1
+```
+
+**je addr : 직전에 비교한 두 피연산자가 같으면 점프**
+
+```asm
+[Code]
+1: mov rax, 0xcafebabe
+2: mov rbx, 0xcafebabe
+3: cmp rax, rbx ; rax == rbx
+4: je 1 ; jump to 1
+```
+
+**jg addr : 직전에 비교한 두 연산자 중 전자가 더 크면 점프**
+
+```asm
+[Code]
+1: mov rax, 0x31337
+2: mov rbx, 0x13337
+3: cmp rax, rbx ; rax > rbx
+4: jg 1  ; jump to 1
+```
+
+### Stack
+x64 아키텍처에서 다음의 명령어로 스택을 조작할 수 있다.  
+
+**
