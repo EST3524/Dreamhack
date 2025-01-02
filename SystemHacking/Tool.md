@@ -510,5 +510,33 @@ Name: dreamhack
 [Inferior 1 (process 4830) exited normally]
 ```
 
+## pwntools
+pwntools는 간단하게 익스플로잇을 제작할 수 있도록 도와주는 python 모듈이다.
+
+## process & remote
+**process** 함수는 익스플로잇을 로컬 바이너리를 대상으로 할 때 사용하는 함수이고, **remote** 함수는 원격 서버를 대상으로 할 때 사용하는 함수이다.
+
+```pytnon
+from pwn import *
+p = process('./test')  # 로컬 바이너리 'test'를 대상으로 익스플로잇 수행
+p = remote('example.com', 31337)  # 'example.com'의 31337 포트에서 실행 중인 프로세스를 대상으로 익스플로잇 수행
+```
+
+## send
+**send**는 데이터를 프로세스에 전송하기 위해 사용한다.
+
+```python
+from pwn import *
+p = process('./test')
+
+p.send(b'A')  # ./test에 b'A'를 입력
+p.sendline(b'A') # ./test에 b'A' + b'\n'을 입력
+p.sendafter(b'hello', b'A')  # ./test가 b'hello'를 출력하면, b'A'를 입력
+p.sendlineafter(b'hello', b'A')  # ./test가 b'hello'를 출력하면, b'A' + b'\n'을 입력
+```
+
+
+
+
 참고 : [gdb](https://dreamhack.io/lecture/courses/55)
 
