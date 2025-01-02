@@ -30,12 +30,12 @@ int main(void) {
 ## entry
 리눅스는 실행파일의 형식으로 **ELF**를 규정하고 있다. ELF는 크게 헤더와 여러 섹션들로 구성되어 있다. 헤더에는 실행에 필요한 여러 정보가 적혀 있고, 센션들에는 컴파일된 기계어 코드, 프로그램 문자열을 비롯한 여러 데이터가 포함되어 있다. ELF 헤더 중 **Entry Point(진입점)** 이라는 필드가 있는데, 운영체제는 ELF를 실행할 때, 진입점부터 프로그램을 실행한다.
 
-```bash
+```
 EST3524@DESKTOP-411274Q:~$ readelf -h debugee
 ELF Header:
   Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
   Class:                             ELF64
-  Data:                              2s complement, little endian
+  Data:                              2's complement, little endian
   Version:                           1 (current)
   OS/ABI:                            UNIX - System V
   ABI Version:                       0
