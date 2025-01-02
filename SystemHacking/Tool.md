@@ -535,8 +535,134 @@ p.sendafter(b'hello', b'A')  # ./test가 b'hello'를 출력하면, b'A'를 입�
 p.sendlineafter(b'hello', b'A')  # ./test가 b'hello'를 출력하면, b'A' + b'\n'을 입력
 ```
 
+## recv
+**recv**는 프로세스에서 데이터를 받기 위해 사용한다.
 
+```python
+from pwn import *
+p = process('./test')
 
+data = p.recv(1024)  # p가 출력하는 데이터를 최대 1024바이트까지 받아서 data에 저장
+data = p.recvline()  # p가 출력하는 데이터를 개행문자를 만날 때까지 받아서 data에 저장
+data = p.recvn(5)  # p가 출력하는 데이터를 5바이트만 받아서 data에 저장
+data = p.recvuntil(b'hello')  # p가 b'hello'를 출력할 때까지 데이터를 수신하여 data에 저장
+data = p.recvall()  # p가 출력하는 데이터를 프로세스가 종료될 때까지 받아서 data에 저장
+```
 
-참고 : [gdb](https://dreamhack.io/lecture/courses/55)
+**recv(n)** 은 최대 n 바이트를 받는 것이므로, 그만큼을 받지 못해도 에러를 발생시키지 않지만, **recvn(n)** 의 경우 정확히 n 바이트의 데이터를 받지 못하면 계속 기다린다.
+
+## packing & unpacking
+**packing & unpacking**은 어떤 값을 리틀 엔디언의 바이트 배열로 변경하거나, 또는 역의 과정을 거처야 하는 경우 사용한다.
+
+```python
+#!/usr/bin/env python3
+# Name: pup.py
+
+from pwn import *
+
+s32 = 0x41424344
+s64 = 0x4142434445464748
+
+print(p32(s32))
+print(p64(s64))
+
+s32 = b"ABCD"
+s64 = b"ABCDEFGH"
+
+print(hex(u32(s32)))
+print(hex(u64(s64)))
+```
+
+```bash
+$ python3 pup.py
+b'DCBA'
+b'HGFEDCBA'
+0x44434241
+0x4847464544434241
+```
+
+## interactive
+셸을 획득했거나, 익스플로잇의 특정 상황에 직접 입력을 주면서 출력을 확인해야할 때 사용한다. 호출하고 나면 터미널로 프로세스에 데이터를 입력하고, 프로세스의 출력을 확인할 수 있다.
+
+```python
+from pwn import *
+p = process('./test')
+p.interactive()
+```
+
+## ELF
+**ELF 헤더**에는 **plt**와 **got** 등 익스플로잇에 사용될 수 있는 각종 정보가 기록되어 있다. pwntools를 사용하면 이 정보들을 쉽게 참조할 수 있다.
+
+```python
+from pwn import *
+e = ELF('./test')
+puts_plt = e.plt['puts'] # ./test에서 puts()의 PLT주소를 찾아서 puts_plt에 저장
+read_got = e.got['read'] # ./test에서 read()의 GOT주소를 찾아서 read_got에 저장
+```
+
+## context.log
+로그를 출력하여 익스플로잇을 디버깅할 때 사용한다. 로그레벨은 **context.log_level** 변수로 조절할 수 있다.
+
+```python
+from pwn import *
+context.log_level = 'error' # 에러만 출력
+context.log_level = 'debug' # 대상 프로세스와 익스플로잇간에 오가는 모든 데이터를 화면에 출력
+context.log_level = 'info'  # 비교적 중요한 정보들만 출력
+```
+
+## context.arch
+pwntools는 셸코드를 생성하거나, 코드를 어셈블, 디스어셈블하는 기능 등을 가지고 있는데, 이들은 공격 대상의 아키텍처에 영향을 받는다. 아키텍처는 **context.arch** 변수로 지정할 수 있으며, 이 값에 따라 몇몇 함수들의 동작이 달라진다.
+
+```python
+from pwn import *
+context.arch = "amd64" # x86-64 아키텍처
+context.arch = "i386"  # x86 아키텍처
+context.arch = "arm"   # arm 아키텍처
+```
+
+## shellcraft
+pwntools에는 자주 사용되는 셸 코드들이 저장되어 있어서, 공격에 필요한 셸 코드를 쉽게 꺼내 쓸 수 있게 해준다. 하지만, 정적으로 생성된 셸 코드는 셸 코드가 실행될 때의 메모리 상태를 반영하지 못한다. 또, 프로그램에 따라 입력할 수 있는 셸 코드의 길이나 구성 가능한 문자의 종류에 제한이 있을 수 있는데, 이런 조건들도 반영하기 어렵다. 따라서, 제약 조건이 존재하는 상황에서는 직접 셸 코드를 작성하는 것이 좋다. [shellcraft-amd64](https://docs.pwntools.com/en/stable/shellcraft/amd64.html)에서 x86-64를 대상으로 생성할 수 있는 여러 종류의 셸 코드를 찾아볼 수 있다.
+
+```python
+#!/usr/bin/env python3
+# Name: shellcraft.py
+
+from pwn import *
+context.arch = 'amd64' # 대상 아키텍처 x86-64
+
+code = shellcraft.sh() # 셸을 실행하는 셸 코드 
+print(code)
+```
+
+```bash
+$ python3 shellcraft.py
+    /* execve(path='/bin///sh', argv=['sh'], envp=0) */
+    /* push b'/bin///sh\x00' */
+    push 0x68
+    mov rax, 0x732f2f2f6e69622f
+    ...
+    syscall
+```
+
+## asm
+pwntools는 어셈블 기능을 제공하는데, 이 기능도 대상 아키텍처에 따라 동작이 달라지므로 아키텍처를 미리 지정해야 한다.
+
+```python
+#!/usr/bin/env python3
+# Name: asm.py
+
+from pwn import *
+context.arch = 'amd64' # 익스플로잇 대상 아키텍처 'x86-64'
+
+code = shellcraft.sh() # 셸을 실행하는 셸 코드
+code = asm(code)       # 셸 코드를 기계어로 어셈블
+print(code)
+```
+
+```bash
+$ python3 asm.py
+b'jhH\xb8/bin///sPH\x89\xe7hri\x01\x01\x814$\x01\x01\x01\x011\xf6Vj\x08^H\x01\xe6VH\x89\xe61\xd2j;X\x0f\x05'
+```
+
+참고 : [gdb](https://dreamhack.io/lecture/courses/55), [pwntools](https://dreamhack.io/lecture/courses/59)
 
