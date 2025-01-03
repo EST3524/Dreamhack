@@ -1,2 +1,0 @@
-# Calling Convention
-**Calling Convention**은 함수의 호출 및 반환에 대한 약속이다. 함수를 호출할 때는 **Caller**의 **Stack Frame** 및 **Return Address**를 저장해야 한다. 또한, Caller는 **Callee가 요구하는 인자를 전달**해줘야 하며, Callee의 실행이 종료될 때는 **반환 값을 전달받아야 한다.**
