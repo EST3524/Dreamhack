@@ -10,10 +10,6 @@
   	- Assemble
   	- Link
 
-- Disassemble & Decompile
-  - Disassemble
-  - Decompile
-
 # Program & Compile
 
 ## Program
@@ -153,7 +149,7 @@ add:
 
 목적 파일로 변환되고 나면 어셈블리 코드가 기계어로 번역되므로 더이상 사람이 해석하기 어려워진다.
 
-```hex
+```
 $ gcc -c add.S -o add.o
 $ file add.o
 add.o: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
@@ -173,19 +169,34 @@ $ hexdump -C add.o
 ...
 ```
 
+위의 예시는 gcc의 -c 옵션을 통해 add.S를 목적 파일로 변환하고, 결과로 나온 파일을 16진수로 출력한 것이다.
 
+## Link
+**Link**는 여러 목적 파일들을 연결하여 실행 가능한 바이너리로 만드는 과정이다.
 
+```c
+// Name: hello-world.c
+// Compile: gcc -o hello-world hello-world.c
 
+#include <stdio.h>
 
+int main() { printf("Hello, world!"); }
+```
 
+위의 코드에서 printf함수를 호출하지만, printf함수의 정의는 hello-world.c에 없으며, libc라는 공유 라이브러리에 존재한다. libc는 gcc의 기본 라이브러리 경로에 있는데, 링커는 바이너리가 printf를 호출하면 libc의 함수가 실행될 수 있도록 연결해준다.링크를 거치고 나면 실행할 수 있는 프로그램이 완성된다.  
 
+다음은 add.o를 링크하는 명령어이다. 링크 과정에서 링커는 main함수를 찾는데 add의 소스 코드에는 main함수의 정의가 없으므로 에러가 발생할 수 있다. 이를 방지하기 위해 --unresolved-symbols를 컴파일 옵션에 추가했다.
 
+```bash
+$ gcc add.o -o add -Xlinker --unresolved-symbols=ignore-in-object-files
+$ file add
+add: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/l, ...
+```
 
+- **Preproces -> Compile -> Aseemble -> Link**					
+- **전처리된 코드 -> 어셈블리 코드 -> 목적 파일 -> 실행 가능한 바이너리**
 
-
-
-
-
+참고 : [Binary](https://dreamhack.io/lecture/courses/67)
 
 
 
