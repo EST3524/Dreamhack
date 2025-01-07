@@ -319,6 +319,8 @@ ret
 .section .note.GNU-stack,"",@progbits
 ```
 
+**x86 함수 호출 규약**
+
 | 함수호출규약 | 사용 컴파일러 | 인자 전달 방식 | 스택 정리 | 적용 |
 | :---: | :---: | :---: | :---: | :---: |
 | stdcall | MSVC | Stack | Callee | WINAPI |
@@ -326,6 +328,12 @@ ret
 | fastcall | MSVC | ECX, EDX | Callee | 최적화된 함수 |
 | thiscall | MSVC | ECX(인스턴스), Stack(인자) | Callee | 클래스의 함수 |
 
+**x86-64 함수 호출 규약**
+
+| 함수호출규약 | 사용 컴파일러 | 인자 전달 방식 | 스택 정리 | 적용 |
+| :---: | :---: | :---: | :---: | :---: |
+| MS ABI | MSVC | RCX, RDX, R8, R9 | Caller | 일반 함수, Windows Syscall |
+| System ABI | GCC | RDI, RSI, RDX, RCX, R8, R9, XMM0-7 | Caller | 일반 함수 |
 
 
 
