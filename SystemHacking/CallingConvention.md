@@ -10,7 +10,6 @@
 		- Stack Frame Allocation
 		- Return Value Passing
 		- Return
-
   - cdecl
 
 ## Calling Convention
