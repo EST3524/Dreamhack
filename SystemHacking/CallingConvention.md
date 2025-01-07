@@ -335,6 +335,7 @@ ret
 | MS ABI | MSVC | RCX, RDX, R8, R9 | Caller | 일반 함수, Windows Syscall |
 | System ABI | GCC | RDI, RSI, RDX, RCX, R8, R9, XMM0-7 | Caller | 일반 함수 |
 
+참고 : [Calling Convention](https://dreamhack.io/lecture/courses/54)
 
 
 
