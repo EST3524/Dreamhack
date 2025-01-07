@@ -132,7 +132,7 @@ pwndbg> x/4gx $rsp
 
 레지스터와 스택을 확인해보면, 소스 코드에서 **callee(123456789123456789, 2, 3, 4, 5, 6, 7)** 로 함수를 호출했는데, 인자들이 순서대로 **rdi, rsi, rdx, rcx, r8, r9 그리고 [rsp]** 에 설정되어 있는 것을 확인할 수 있다.
 
-## Return Address Saving
+## 2. Return Address Saving
 si 명령어로 한 단계 더 실행시킨다. call이 실행되고 스택을 확인해보면 0x555555554682가 반환주소로 저장되어 있다. gdb로 확인해보면 0x555555554682는 callee호출 다음 명령어의 주소이다. callee에서 반환됐을 때, 이 주소를 꺼내어 원래의 실행 흐름으로 돌아갈 수 있다.
 
 ```asm
@@ -147,7 +147,184 @@ pwndbg> x/10i 0x0000555555554682 - 5
    0x555555554682 <caller+48>:	add    rsp,0x8
 ```
 
+## 3. Stack Frame Saving
+x/5i $rip 명령어로 callee함수의 Prologue를 살펴보면, 가장 먼저 push rbp를 통해 caller의 rbp를 저장하고 있다. rbp가 스택프레임의 가장 낮은 주소를 가리키는 포인터이므로, 이를 **SFP(Stack Frame Pointer)** 라고도 부른다. callee에서 반환될 때, SFP를 꺼내어 caller의 스택 프레임으로 돌아갈 수 있다.  
 
+si로 push rbp를 실행하고, 스택을 확인해보면 rbp값인 0x00007fffffffe300가 저장된 것을 확인할 수 있다.
+
+```asm
+pwndbg> x/9i $rip
+=> 0x555555555129 <callee>:	endbr64
+   0x55555555512d <callee+4>:	push   rbp
+   0x55555555512e <callee+5>:	mov    rbp,rsp
+   0x555555555131 <callee+8>:	mov    QWORD PTR [rbp-0x18],rdi
+   0x555555555135 <callee+12>:	mov    DWORD PTR [rbp-0x1c],esi
+   0x555555555138 <callee+15>:	mov    DWORD PTR [rbp-0x20],edx
+   0x55555555513b <callee+18>:	mov    DWORD PTR [rbp-0x24],ecx
+   0x55555555513e <callee+21>:	mov    DWORD PTR [rbp-0x28],r8d
+   0x555555555142 <callee+25>:	mov    DWORD PTR [rbp-0x2c],r9d
+pwndbg> si
+pwndbg> si
+0x000055555555512e in callee ()
+──────────────────────[ DISASM / x86-64 / set emulate on ]──────────────────────
+   0x555555555129 <callee>       endbr64
+   0x55555555512d <callee+4>     push   rbp
+ ► 0x55555555512e <callee+5>     mov    rbp, rsp
+   0x555555555131 <callee+8>     mov    qword ptr [rbp - 0x18], rdi
+...
+pwndbg> x/4gx $rsp
+0x7fffffffe2e8: 0x00007fffffffe300  0x00005555555551bc
+0x7fffffffe2f8: 0x0000000000000007  0x00007fffffffe310
+pwndbg> print $rbp
+$1 = (void *) 0x7fffffffe300
+```
+
+## 4. Stack Frame Allocation
+mov rbp, rsp로 rbp와 rsp가 같은 주소를 가리키게 한 뒤, rsp의 값을 빼게 되면, rbp와 rsp 사이 공간을 새로운 스택 프레임으로 할당하는 것이지만, callee 함수는 지역 변수를 사용하지 않으므로, 새로운 스택 프레임을 만들지 않는다.  
+
+si로 실행하고, 레지스터를 보면 이 둘이 같은 주소를 가리키는 것을 확인할 수 있다.
+
+```asm
+pwndbg> x/5i $rip
+=> 0x55555555512e <callee+5>: mov    rbp,rsp
+   0x555555555131 <callee+8>: mov    QWORD PTR [rbp-0x18],rdi
+   0x555555555135 <callee+12>:  mov    DWORD PTR [rbp-0x1c],esi
+   0x555555555138 <callee+15>:  mov    DWORD PTR [rbp-0x20],edx
+   0x55555555513b <callee+18>:  mov    DWORD PTR [rbp-0x24],ecx
+
+pwndbg> print $rbp
+$2 = (void *) 0x7fffffffe300
+pwndbg> print $rsp
+$3 = (void *) 0x7fffffffe2e8
+
+pwndbg> si
+
+pwndbg> print $rbp
+$4 = (void *) 0x7fffffffe2e8
+pwndbg> print $rsp
+$5 = (void *) 0x7fffffffe2e8
+```
+
+코드를 보면, ret라는 변수를 선언하긴 했지만, 반환 값을 저장하는 용도 외로는 사용되지 않는다. gcc는 이런 변수에 대해 스택을 할당하지 않고, **rax**를 직접 사용한다.
+
+## 5. Return Value Passing
+덧셈 연산을 모두 마치고, 함수의 Epilogue에 도달하면, 반환값을 **rax**에 옮긴다. 반환 직전에 **rax**를 출력하면 전달한 7개 인자의 합인 123456789123456816을 확인할 수 있다.
+
+```asm
+pwndbg> b *callee+79
+Breakpoint 3 at 0x555555555178
+pwndbg> c
+...
+──────────────────────[ DISASM / x86-64 / set emulate on ]──────────────────────
+ ► 0x555555555178 <callee+79>    add    rax, rdx
+   0x55555555517b <callee+82>    mov    qword ptr [rbp - 8], rax
+   0x55555555517f <callee+86>    mov    rax, qword ptr [rbp - 8]
+   0x555555555183 <callee+90>    pop    rbp
+   0x555555555184 <callee+91>    ret
+
+pwndbg> b *callee+91
+Breakpoint 4 at 0x555555555184
+pwndbg> c
+...
+──────────────────────[ DISASM / x86-64 / set emulate on ]──────────────────────
+   0x555555555178 <callee+79>    add    rax, rdx
+   0x55555555517b <callee+82>    mov    qword ptr [rbp - 8], rax
+   0x55555555517f <callee+86>    mov    rax, qword ptr [rbp - 8]
+   0x555555555183 <callee+90>    pop    rbp
+ ► 0x555555555184 <callee+91>    ret                                  <0x5555555551bc; caller+55>
+    ↓
+...
+
+pwndbg> print $rax
+$1 = 123456789123456816
+```
+
+## 6. Return
+반환은 저장해뒀던 스택 프레임과 반환 주소를 꺼내면서 이루어진다. 여기서는 callee 함수가 스택 프레임을 만들지 않았기 때문에, pop rbp로 스택 프레임을 꺼낼 수 있지만, 일반적으로 leave로 스택 프레임을 꺼낸다.  
+
+스택 프레임을 꺼낸 뒤에는, ret로 caller에 복귀한다. 앞에서 저장해뒀던 sfp로 rbp가, 반환 주소로 rip가 설정된 것을 확인할 수 있다.
+
+```asm
+pwndbg> d
+pwndbg> b *callee+90
+Breakpoint 1 at 0x1183
+pwndbg> r
+...
+──────────────────────[ DISASM / x86-64 / set emulate on ]──────────────────────
+ ► 0x555555555183 <callee+90>                     pop    rbp
+   0x555555555184 <callee+91>                     ret
+    ↓
+...
+
+pwndbg> si
+pwndbg> si
+...
+──────────────────────[ DISASM / x86-64 / set emulate on ]──────────────────────
+   0x555555555183 <callee+90>                     pop    rbp
+   0x555555555184 <callee+91>                     ret
+    ↓
+ ► 0x5555555551bc <caller+55>                     add    rsp, 8
+   0x5555555551c0 <caller+59>                     nop
+   0x5555555551c1 <caller+60>                     leave
+   0x5555555551c2 <caller+61>                     ret
+    ↓
+...
+pwndbg> print $rbp
+$1 = (void *) 0x7fffffffe300
+pwndbg> print $rip
+$2 = (void (*)()) 0x5555555551bc <caller+55>
+```
+
+## cdecl
+x86 아키텍처는 레지스터의 수가 적으므로, 스택을 통해 인자를 전달한다. 또한, 인자를 전달하기 위해 사용한 스택을 caller가 정리한다. 스택을 통해 인자를 전달할 때는, 마지막 인자부터 첫 번째 인자까지 거꾸로 스택에 push한다.  
+
+**예제 코드**
+
+```c
+// Name: cdecl.c
+// Compile: gcc -fno-asynchronous-unwind-tables -nostdlib -masm=intel \
+//          -fomit-frame-pointer -S cdecl.c -w -m32 -fno-pic -O0
+
+void __attribute__((cdecl)) callee(int a1, int a2){ // cdecl로 호출
+}
+
+void caller(){
+   callee(1, 2);
+}
+```
+
+```asm
+; Name: cdecl.s
+
+.file "cdecl.c"
+.intel_syntax noprefix
+.text
+.globl callee
+.type callee, @function
+callee:
+nop
+ret ; 스택을 정리하지 않고 리턴합니다.
+.size callee, .-callee
+.globl caller
+.type caller, @function
+caller:
+push 2 ; 2를 스택에 저장하여 callee의 인자로 전달합니다.
+push 1 ; 1를 스택에 저장하여 callee의 인자로 전달합니다.
+call callee
+add esp, 8 ; 스택을 정리합니다. (push를 2번하였기 때문에 8byte만큼 esp가 증가되어 있습니다.)
+nop
+ret
+.size caller, .-caller
+.ident "GCC: (Ubuntu 11.3.0-1ubuntu1~22.04.1) 11.3.0"
+.section .note.GNU-stack,"",@progbits
+```
+
+| 함수호출규약 | 사용 컴파일러 | 인자 전달 방식 | 스택 정리 | 적용 |
+| :---: | :---: | :---: | :---: | :---: |
+| stdcall | MSVC | Stack | Callee | WINAPI |
+| cdecl | GCC, MSVC | Stack | Caller | 일반 함수 |
+| fastcall | MSVC | ECX, EDX | Callee | 최적화된 함수 |
+| thiscall | MSVC | ECX(인스턴스), Stack(인자) | Callee | 클래스의 함수 |
 
 
 
