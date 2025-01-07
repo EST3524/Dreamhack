@@ -4,12 +4,12 @@
 # Overview
 - Calling Convention
   - SYSV
-		1. Argument Passing
-		2. Return Address Saving
-		3. Stack Frame Saving
-		4. Stack Frame Allocation
-		5. Return Value Passing
-		6. Return
+		- Argument Passing
+		- Return Address Saving
+		- Stack Frame Saving
+		- Stack Frame Allocation
+		- Return Value Passing
+		- Return
 
   - cdecl
 
