@@ -78,7 +78,7 @@ int main() {
 
 지역 변수가 선언/정의된 순서와 다르게 스택에 배치되어 있는 경우가 있는데 이는 컴파일러가 여러가지 요인을 고려하여 배치하는 것으로, 순서를 예측하는 것이 거의 불가능하다. 따라서 스택에 저장된 지역변수의 순서를 알고싶다면, 반드시 디버깅을 통해 확인해야 한다.
 
-
+> The compiler organizes the variables as it thinks fit, don't have expectations... It may sort them by name, type, size, declaration order, usage frequency, or even karma. - NevemTeve (linuxquestions.org)
 
 ### Heap Segment
 힙 세그먼트는 힙 데이터가 위치하는 세그먼트이다. 스택과 마찬가지로 프로그램 실행중에 동적으로 할당될 수 있고, 리눅스에서는 스택 세그먼트와 반대 방향으로 확장된다. 이는 스택 세그먼트와 힙 세그먼트가 충돌하는 것을 최대한 막기 위한 설계이다.  
