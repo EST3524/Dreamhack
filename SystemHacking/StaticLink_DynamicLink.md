@@ -4,13 +4,14 @@
 # Overview
 
 - Library
-	- Link
-		- Static Link
-		- Dynamic Link
 
-	- PLT & GOT
-		- PLT
-		- GOT
+- Link
+	- Static Link
+	- Dynamic Link
+
+- PLT & GOT
+	- PLT
+	- GOT
 
 ## Library
 라이브러리는 컴퓨터 시스템에서, 프로그램들이 함수나 변수를 공유해서 사용할 수 있게 한다. C의 표준 라이브러리인 **libc**는 ubuntu에 기본적으로 탑재된 라이브러리이며, **/lib/x86_64-linux-gnu/libc.so.6**에 있다.  
