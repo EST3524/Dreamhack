@@ -1,4 +1,4 @@
-# Static Link vs. Dynamic Link
+# Static Link / Dynamic Link
 이 파일에는 Static Link, Dynamic Link에 대해서 정리한다.
 
 # Overview
